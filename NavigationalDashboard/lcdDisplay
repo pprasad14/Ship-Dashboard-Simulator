@@ -1,0 +1,78 @@
+#include "leddisplay.h"
+#include <QDebug>
+#include <QPainter>
+LEDDisplay::LEDDisplay(QWidget *parent) :
+    QMainWindow(parent)
+{
+}
+
+void LEDDisplay::paintEvent(QPaintEvent *)
+{
+    float num = 8.98*1000;
+
+    QPainter painter(this);
+    QPen pen;
+    pen.setColor(Qt::red);
+    pen.setWidth(10);
+    painter.setPen(pen);
+    painter.drawPoint(675,290);
+    splitNumber(num);
+
+}
+
+void LEDDisplay::setLED()
+{   QPen pen;
+    QPainter painter(this);
+    pen.setColor(Qt::white);
+    pen.setWidth(5);
+    painter.setPen(pen);
+    painter.setOpacity(0.1);
+    for (int i=0;i<7;i++)
+    {
+
+        painter.drawLine(segment[i][0],segment[i][1],segment[i][2],segment[i][3]);
+       }
+
+}
+
+
+void LEDDisplay::glowLED(int i)
+{
+    QPainter painter(this);
+    QPen pen;
+    pen.setColor(Qt::red);
+    pen.setWidth(5);
+    pen.setCapStyle(Qt::RoundCap);
+    painter.setPen(pen);
+    painter.setRenderHint(QPainter::Antialiasing,true);
+
+
+ for(int j=0;j<7;j++)
+{
+     if(segment_numb[i][j]==1)
+     {
+         painter.drawLine(segment[j][0],segment[j][1],segment[j][2],segment[j][3]);
+     }
+ }
+}
+
+void LEDDisplay::LEDspacing(int s)
+{
+    for(int i = 0;i<7;i++)
+    {
+        segment[i][0]-=s;
+        segment[i][2]-=s;
+    }
+}
+
+void LEDDisplay::splitNumber(int num)
+{   int rem=0;
+    for(int i=0;i<6;i++)
+    {
+        rem=num%10;
+        num=num/10;
+        glowLED(rem);
+        LEDspacing(100);
+    }
+
+}
